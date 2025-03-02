@@ -43,12 +43,11 @@ struct GameState {
 }
 }
 
-turbo::go! {
+turbo::go!({
     let mut state = GameState::load();
     let input = gamepad(0);
 
     if !state.is_started {
-
         text!(
             "Press Start to Play",
             x = 55,
@@ -67,7 +66,13 @@ turbo::go! {
 
     if state.is_game_over {
         // Display Game Over message
-        text!("Game Over!", x = 85, y = 75, font = Font::L, color = 0xff0000ff);
+        text!(
+            "Game Over!",
+            x = 85,
+            y = 75,
+            font = Font::L,
+            color = 0xff0000ff
+        );
 
         if state.score > state.high_score {
             state.high_score = state.score;
@@ -122,8 +127,18 @@ turbo::go! {
 
     if cycle_phase == 1 {
         // Night mode: Use "backgroundnight" sprite for the background
-        sprite!("backgroundnight", x = bg_x % bg_width, y = -250, fps = fps::FAST);
-        sprite!("backgroundnight", x = (bg_x % bg_width) + bg_width, y = -250, fps = fps::FAST);
+        sprite!(
+            "backgroundnight",
+            x = bg_x % bg_width,
+            y = -250,
+            fps = fps::FAST
+        );
+        sprite!(
+            "backgroundnight",
+            x = (bg_x % bg_width) + bg_width,
+            y = -250,
+            fps = fps::FAST
+        );
 
         // Show stars
         for col in 0..9 {
@@ -143,7 +158,12 @@ turbo::go! {
     } else {
         // Day mode: Use "bglonger" sprite for the background
         sprite!("bglonger", x = bg_x % bg_width, y = -250, fps = fps::FAST);
-        sprite!("bglonger", x = (bg_x % bg_width) + bg_width, y = -250, fps = fps::FAST);
+        sprite!(
+            "bglonger",
+            x = (bg_x % bg_width) + bg_width,
+            y = -250,
+            fps = fps::FAST
+        );
 
         // Show clouds
         for col in 0..9 {
@@ -173,63 +193,74 @@ turbo::go! {
         sprite!("floor", x = x_pos + num_floors * floor_width, y = 114);
     }
 
-    sprite!("dinorun-Sheet", x = state.player_x, y = state.player_y, fps = fps::FAST);
+    sprite!(
+        "dinorun-Sheet",
+        x = state.player_x,
+        y = state.player_y,
+        fps = fps::FAST
+    );
 
     let tree_speed_factor = 5;
 
-     for i in 0..state.tree_positions.len() {
-         state.tree_positions[i] -= tree_speed_factor;
+    for i in 0..state.tree_positions.len() {
+        state.tree_positions[i] -= tree_speed_factor;
 
-         if state.tree_positions[i] < -32 {
-             state.tree_positions[i] = 256 + (rand() % 200 + 200) as i32; // More spacing between trees
-             state.score += 1;
-         }
+        if state.tree_positions[i] < -32 {
+            state.tree_positions[i] = 256 + (rand() % 200 + 200) as i32; // More spacing between trees
+            state.score += 1;
+        }
 
-         // Collision detection for 32x32 trees
-         if state.player_x + 16.0 > state.tree_positions[i] as f32
-             && state.player_x < (state.tree_positions[i] + 32) as f32
-             && state.player_y + 16.0 > 105.0
-         {
-             state.is_game_over = true;
-         }
+        // Collision detection for 32x32 trees
+        if state.player_x + 16.0 > state.tree_positions[i] as f32
+            && state.player_x < (state.tree_positions[i] + 32) as f32
+            && state.player_y + 16.0 > 105.0
+        {
+            state.is_game_over = true;
+        }
 
-         sprite!("tree32px", x = state.tree_positions[i], y = 105, fps = fps::FAST);
-     }
+        sprite!(
+            "tree32px",
+            x = state.tree_positions[i],
+            y = 105,
+            fps = fps::FAST
+        );
+    }
 
-     // Move and reposition tree16x16
- for i in 0..state.tree16_positions.len() {
-     state.tree16_positions[i] -= tree_speed_factor;
+    // Move and reposition tree16x16
+    for i in 0..state.tree16_positions.len() {
+        state.tree16_positions[i] -= tree_speed_factor;
 
-     if state.tree16_positions[i] < -16 {
-         state.tree16_positions[i] = 256 + (rand() % 200 + 200) as i32; // More spacing for 16x16 trees
-         state.score += 1;
-     }
+        if state.tree16_positions[i] < -16 {
+            state.tree16_positions[i] = 256 + (rand() % 200 + 200) as i32; // More spacing for 16x16 trees
+            state.score += 1;
+        }
 
-     // Corrected collision detection for 16x16 trees using integers
-       let player_right = state.player_x + 16.0;  // Right edge of the player
-         let player_left = state.player_x;          // Left edge of the player
-         let player_bottom = state.player_y + 16.0; // Bottom edge of the player
-         let player_top = state.player_y;           // Top edge of the player
-         // Tree 16x16 bounds
-         let tree16_x = state.tree16_positions[i] as f32; // X position of the 16x16 tree
-         let tree16_right = tree16_x + 16.0; // Right edge of the 16x16 tree
-         let tree16_y = 102.0; // Top of the 16x16 tree
-         let tree16_bottom = tree16_y + 16.0; // Bottom edge of the 16x16 tree
+        // Corrected collision detection for 16x16 trees using integers
+        let player_right = state.player_x + 16.0; // Right edge of the player
+        let player_left = state.player_x; // Left edge of the player
+        let player_bottom = state.player_y + 16.0; // Bottom edge of the player
+        let player_top = state.player_y; // Top edge of the player
+                                         // Tree 16x16 bounds
+        let tree16_x = state.tree16_positions[i] as f32; // X position of the 16x16 tree
+        let tree16_right = tree16_x + 16.0; // Right edge of the 16x16 tree
+        let tree16_y = 102.0; // Top of the 16x16 tree
+        let tree16_bottom = tree16_y + 16.0; // Bottom edge of the 16x16 tree
 
-         // Check for X and Y axis overlaps (collision box)
-         if player_right > tree16_x && player_left < tree16_right &&
-             player_bottom > tree16_y && player_top < tree16_bottom {
-             state.is_game_over = true;
-         }
+        // Check for X and Y axis overlaps (collision box)
+        if player_right > tree16_x
+            && player_left < tree16_right
+            && player_bottom > tree16_y
+            && player_top < tree16_bottom
+        {
+            state.is_game_over = true;
+        }
 
-     sprite!("tree16x16", x = tree16_x, y = 118, fps = fps::FAST); // Y-position of 16x16 trees
- }
-
+        sprite!("tree16x16", x = tree16_x, y = 118, fps = fps::FAST); // Y-position of 16x16 trees
+    }
 
     text!("Score: {}", state.score; x = 170, y = 30, font = Font::L, color = 0x0000ffff);
-      text!("High Score: {}", state.high_score; x = 10, y = 30, font = Font::M, color = 0x0000ffff);
-
+    text!("High Score: {}", state.high_score; x = 10, y = 30, font = Font::M, color = 0x0000ffff);
 
     state.frame += 1;
     state.save();
-}
+});
