@@ -235,7 +235,7 @@ turbo::go!({
             state.score += 1;
         }
 
-        // Corrected collision detection for 16x16 trees using integers
+        //collision detection for 16x16 trees using integers
         let player_right = state.player_x + 16.0; // Right edge of the player
         let player_left = state.player_x; // Left edge of the player
         let player_bottom = state.player_y + 16.0; // Bottom edge of the player
