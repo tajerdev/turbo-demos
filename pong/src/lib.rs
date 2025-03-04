@@ -41,7 +41,7 @@ turbo::init! {
     }
 }
 
-turbo::go! ({
+turbo::go!({
     let mut state = GameState::load();
 
     let paddle_speed = 4.0;
@@ -94,12 +94,13 @@ turbo::go! ({
     }
 
     // Ball collisions with paddles
-    if (state.ball.x - state.ball.radius < state.paddle1.x + 8.0 &&
-        state.ball.y > state.paddle1.y &&
-        state.ball.y < state.paddle1.y + state.paddle1.height) ||
-       (state.ball.x + state.ball.radius > state.paddle2.x &&
-        state.ball.y > state.paddle2.y &&
-        state.ball.y < state.paddle2.y + state.paddle2.height) {
+    if (state.ball.x - state.ball.radius < state.paddle1.x + 8.0
+        && state.ball.y > state.paddle1.y
+        && state.ball.y < state.paddle1.y + state.paddle1.height)
+        || (state.ball.x + state.ball.radius > state.paddle2.x
+            && state.ball.y > state.paddle2.y
+            && state.ball.y < state.paddle2.y + state.paddle2.height)
+    {
         state.ball.velocity_x = -state.ball.velocity_x;
     }
 
@@ -134,4 +135,4 @@ turbo::go! ({
 
     // Save game state for the next frame
     state.save();
-})
+});
