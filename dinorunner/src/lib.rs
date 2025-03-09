@@ -43,7 +43,7 @@ struct GameState {
 }
 }
 
-turbo::go! {
+turbo::go! ({
     let mut state = GameState::load();
     let input = gamepad(0);
 
@@ -232,4 +232,4 @@ turbo::go! {
 
     state.frame += 1;
     state.save();
-}
+});
